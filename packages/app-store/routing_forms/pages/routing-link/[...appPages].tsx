@@ -6,16 +6,19 @@ import { Toaster } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 
 import showToast from "@calcom/lib/notification";
+import { inferSSRProps } from "@calcom/types/inferSSRProps";
 import { Button } from "@calcom/ui";
-import { Form, Label } from "@calcom/ui/form/fields";
 import { trpc } from "@calcom/web/lib/trpc";
+import { AppPrisma, GetServerSidePropsContext } from "@calcom/web/pages/apps/[slug]/[...pages]";
 
+import { getSerializableForm } from "../../utils";
 import { getQueryBuilderConfig } from "../route-builder/[...appPages]";
 
-function RoutingForm({ form }) {
+function RoutingForm({ form }: inferSSRProps<typeof getServerSideProps>) {
   const [customPageMessage, setCustomPageMessage] = useState(null);
   const formFillerIdRef = useRef(null);
   const formFillerId = formFillerIdRef.current;
+  const decidedActionRef = useRef(null);
   useEffect(() => {
     const formFillerId = uuidv4();
     // TODO: We might want to prevent spam from a single user.
@@ -29,22 +32,43 @@ function RoutingForm({ form }) {
 
   const onSubmit = (response) => {
     const decidedAction = processRoute({ form, response });
-    if (decidedAction.type === "customPageMessage") {
-      setCustomPageMessage(decidedAction.value);
-    } else if (decidedAction.type === "eventTypeRedirectUrl") {
-      router.push(`/${decidedAction.value}`);
-    } else if (decidedAction.type === "externalRedirectUrl") {
-      window.location.href = decidedAction.value;
+
+    if (!decidedAction) {
+      // FIXME: Make sure that when a form is created, there is always a fallback route and then remove this.
+      alert("Define atleast 1 route");
+      return;
+    }
+
+    const responseWithLabels = {};
+    for (const [id, value] of Object.entries(response)) {
+      responseWithLabels[id] = {
+        value,
+        label: form.fields.find((field) => field.id === id)?.label,
+      };
     }
     responseMutation.mutate({
-      formId,
+      formId: form.id,
       formFillerId,
-      response: response,
+      response: responseWithLabels,
     });
+    decidedActionRef.current = decidedAction;
   };
 
   const responseMutation = trpc.useMutation("viewer.app_routing_forms.response", {
     onSuccess: () => {
+      const decidedAction = decidedActionRef.current;
+      if (!decidedAction) {
+        return;
+      }
+
+      //TODO: Maybe take action after successful mutation
+      if (decidedAction.type === "customPageMessage") {
+        setCustomPageMessage(decidedAction.value);
+      } else if (decidedAction.type === "eventTypeRedirectUrl") {
+        router.push(`/${decidedAction.value}`);
+      } else if (decidedAction.type === "externalRedirectUrl") {
+        window.location.href = decidedAction.value;
+      }
       showToast("Form submitted successfully! Redirecting now ...", "success");
     },
     onError: (e) => {
@@ -161,6 +185,9 @@ function processRoute({ form, response = {} }) {
     .concat([routes.find((route) => route.isFallback)]);
 
   reorderedRoutes.some((route) => {
+    if (!route) {
+      return false;
+    }
     const state = {
       tree: QbUtils.checkTree(QbUtils.loadTree(route.queryValue), queryBuilderConfig),
       config: queryBuilderConfig,
@@ -187,8 +214,8 @@ export default function RoutingLink({ form }) {
   return <RoutingForm form={form}></RoutingForm>;
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext, prisma) {
-  const { req, query } = context;
+export async function getServerSideProps(context: GetServerSidePropsContext, prisma: AppPrisma) {
+  const { query } = context;
   const formId = query.appPages[0];
   if (!formId || query.appPages.length > 1) {
     return {
@@ -206,12 +233,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext, pri
       notFound: true,
     };
   }
-  form.createdAt = form.createdAt.toString();
-  form.updatedAt = form.updatedAt.toString();
 
   return {
     props: {
-      form,
+      form: getSerializableForm(form),
     },
   };
 }

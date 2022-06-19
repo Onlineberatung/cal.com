@@ -1,6 +1,5 @@
 import { TrashIcon, PlusIcon, ArrowUpIcon, CollectionIcon, ArrowDownIcon } from "@heroicons/react/solid";
 import { useForm, UseFormReturn, useFieldArray, Controller } from "react-hook-form";
-import { zodFields, zodRoutes } from "routing_forms/trpc-router";
 import { v4 as uuidv4 } from "uuid";
 
 import classNames from "@calcom/lib/classNames";
@@ -17,6 +16,7 @@ import PencilEdit from "@components/PencilEdit";
 
 import RoutingShell from "../../components/RoutingShell";
 import SideBar from "../../components/SideBar";
+import { getSerializableForm } from "../../utils";
 
 export const FieldTypes = [
   {
@@ -253,6 +253,8 @@ export default function FormEdit({
           className="w-4/6"
           form={hookForm}
           handleSubmit={(data) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
             mutation.mutate({
               ...data,
             });
@@ -339,27 +341,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext, pri
       notFound: true,
     };
   }
-  const routesParsed = zodRoutes.safeParse(form.routes);
-  if (!routesParsed.success) {
-    throw new Error("Error parsing routes");
-  }
-
-  const fieldsParsed = zodFields.safeParse(form.fields);
-  if (!fieldsParsed.success) {
-    throw new Error("Error parsing fields");
-  }
-
-  const serializableForm = {
-    ...form,
-    routes: routesParsed.data,
-    fields: fieldsParsed.data,
-    createdAt: form.createdAt.toString(),
-    updatedAt: form.updatedAt.toString(),
-  };
-
   return {
     props: {
-      form: serializableForm,
+      form: getSerializableForm(form),
     },
   };
 }

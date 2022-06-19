@@ -6,6 +6,7 @@ import {
   ArrowUpIcon,
   ArrowDownIcon,
 } from "@heroicons/react/solid";
+import { Prisma } from "@prisma/client";
 import jsonLogic from "json-logic-js";
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Query, Builder, Utils as QbUtils } from "react-awesome-query-builder";
@@ -15,25 +16,26 @@ import { JsonGroup, Config, ImmutableTree, BuilderProps } from "react-awesome-qu
 import { withQuery } from "@calcom/lib/QueryCell";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import showToast from "@calcom/lib/notification";
+import { inferSSRProps } from "@calcom/types/inferSSRProps";
 import { Button, Switch } from "@calcom/ui";
 import { Label } from "@calcom/ui/form/fields";
 import { trpc } from "@calcom/web/lib/trpc";
+import type { GetServerSidePropsContext, AppPrisma } from "@calcom/web/pages/apps/[slug]/[...pages]";
 
 import PencilEdit from "@components/PencilEdit";
 import { SelectWithValidation as Select } from "@components/ui/form/Select";
 
 import RoutingShell from "../../components/RoutingShell";
 import SideBar from "../../components/SideBar";
-import RoutingForm, { processRoute } from "../../components/form";
-// @ts-ignore
 import CalConfig from "../../components/react-awesome-query-builder/config/config";
+import { getSerializableForm } from "../../utils";
 import { FieldTypes } from "../form-edit/[...appPages]";
 
 const InitialConfig = CalConfig as Config;
 
-export function getQueryBuilderConfig(form: any) {
-  const fields = {};
-  form?.fields.forEach((field) => {
+export function getQueryBuilderConfig(form: inferSSRProps<typeof getServerSideProps>["form"]) {
+  const fields: Record<string, any> = {};
+  form.fields.forEach((field) => {
     if (FieldTypes.map((f) => f.value).includes(field.type)) {
       const optionValues = field.selectText?.trim().split("\n");
       const options = optionValues?.map((value) => {
@@ -44,9 +46,12 @@ export function getQueryBuilderConfig(form: any) {
         };
       });
 
+      const widget = InitialConfig.widgets[field.type];
+      const widgetType = widget.type;
+
       fields[field.id] = {
         label: field.label,
-        type: InitialConfig.widgets[field.type].type,
+        type: widgetType,
         valueSources: ["value"],
         fieldSettings: {
           listValues: options,
@@ -267,7 +272,10 @@ const Route = ({ route, routes, setRoute, config, setRoutes, moveUp = null, move
   );
 };
 
-const deserializeRoute = (route: SerializableRoute, config): Route => {
+const deserializeRoute = (route: SerializableRoute | null, config): Route => {
+  if (!route) {
+    return route;
+  }
   return {
     ...route,
     state: {
@@ -277,7 +285,13 @@ const deserializeRoute = (route: SerializableRoute, config): Route => {
   };
 };
 
-const Routes: React.FC = ({ form, appUrl }) => {
+const Routes = ({
+  form,
+  appUrl,
+}: {
+  form: inferSSRProps<typeof getServerSideProps>["form"];
+  appUrl: string;
+}) => {
   const { routes: serializedRoutes } = form;
   const { t } = useLocale();
   const config: Config = getQueryBuilderConfig(form);
@@ -425,7 +439,10 @@ const Routes: React.FC = ({ form, appUrl }) => {
   );
 };
 
-const RouteBuilder: React.FC = ({ form, appUrl }) => {
+export default function RouteBuilder({
+  form,
+  appUrl,
+}: inferSSRProps<typeof getServerSideProps> & { appUrl: string }) {
   return (
     <RoutingShell
       appUrl={appUrl}
@@ -436,13 +453,9 @@ const RouteBuilder: React.FC = ({ form, appUrl }) => {
       </div>
     </RoutingShell>
   );
-};
-
-if (typeof window !== "undefined") {
-  window.jsonLogic = jsonLogic;
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext, prisma) {
+export async function getServerSideProps(context: GetServerSidePropsContext, prisma: AppPrisma) {
   const { req, query } = context;
   const formId = query.appPages[0];
   if (!formId || query.appPages.length > 1) {
@@ -462,14 +475,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext, pri
     };
   }
 
-  form.createdAt = form.createdAt.toString();
-  form.updatedAt = form.updatedAt.toString();
-
   return {
     props: {
-      form,
+      form: getSerializableForm(form),
     },
   };
 }
-
-export default RouteBuilder;

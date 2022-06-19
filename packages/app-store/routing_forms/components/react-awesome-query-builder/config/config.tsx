@@ -1,41 +1,44 @@
-import React from "react";
-//@ts-ignore
-import BasicConfig, { stringifyForDisplay } from "react-awesome-query-builder/lib/config/basic";
+import { Settings } from "react-awesome-query-builder";
+import BasicConfig from "react-awesome-query-builder/lib/config/basic";
 
-import CalWidgets from "../widgets";
+import Widgets from "../widgets";
 
 const {
-  CalBooleanWidget,
-  CalTextWidget,
-  CalTextAreaWidget,
-  CalMultiSelectWidget,
-  CalSelectWidget,
-  CalNumberWidget,
-  CalAutocompleteWidget,
-  CalFieldSelect,
-  CalFieldAutocomplete,
-  CalConjs,
-  CalSwitch,
-  CalButton,
-  CalButtonGroup,
-  CalValueSources,
-  CalProvider,
-} = CalWidgets;
+  BooleanWidget,
+  TextWidget,
+  TextAreaWidget,
+  MultiSelectWidget,
+  SelectWidget,
+  NumberWidget,
+  FieldSelect,
+  Conjs,
+  Button,
+  ButtonGroup,
+  ValueSources,
+  Provider,
+} = Widgets;
 
-const settings = {
+const renderComponent = function <T1>(props: T1 | undefined, Component: React.FC<T1>) {
+  if (!props) {
+    return <div></div>;
+  }
+  return <Component {...props} />;
+};
+
+const settings: Settings = {
   ...BasicConfig.settings,
 
-  renderField: (props) =>
-    props?.customProps?.showSearch ? <CalFieldAutocomplete {...props} /> : <CalFieldSelect {...props} />,
-  renderOperator: (props) => <CalFieldSelect {...props} />,
-  renderFunc: (props) => <CalFieldSelect {...props} />,
-  renderConjs: (props) => <CalConjs {...props} />,
-  renderSwitch: (props) => <CalSwitch {...props} />,
-  renderButton: (props) => <CalButton {...props} />,
-  renderButtonGroup: (props) => <CalButtonGroup {...props} />,
-  renderValueSources: (props) => <CalValueSources {...props} />,
-  renderProvider: (props) => <CalProvider {...props} />,
+  renderField: (props) => renderComponent(props, FieldSelect),
+  renderOperator: (props) => renderComponent(props, FieldSelect),
+  renderFunc: (props) => renderComponent(props, FieldSelect),
+  renderConjs: (props) => renderComponent(props, Conjs),
+  renderButton: (props) => renderComponent(props, Button),
+  renderButtonGroup: (props) => renderComponent(props, ButtonGroup),
+  renderValueSources: (props) => renderComponent(props, ValueSources),
+  renderProvider: (props) => renderComponent(props, Provider),
+
   groupActionsPosition: "bottomCenter",
+
   // Disable groups
   maxNesting: 1,
 };
@@ -44,48 +47,40 @@ const widgets = {
   ...BasicConfig.widgets,
   text: {
     ...BasicConfig.widgets.text,
-    factory: (props) => <CalTextWidget {...props} />,
+    factory: (props) => <TextWidget {...props} />,
   },
   textarea: {
     ...BasicConfig.widgets.textarea,
-    factory: (props) => <CalTextAreaWidget {...props} />,
+    factory: (props) => <TextAreaWidget {...props} />,
   },
   number: {
     ...BasicConfig.widgets.number,
-    factory: (props) => <CalNumberWidget {...props} />,
+    factory: (props) => <NumberWidget {...props} />,
   },
   multiselect: {
     ...BasicConfig.widgets.multiselect,
     factory: (props) => {
-      return props.asyncFetch || props.showSearch ? (
-        <CalAutocompleteWidget multiple {...props} />
-      ) : (
-        <CalMultiSelectWidget {...props} />
-      );
+      return <MultiSelectWidget {...props} />;
     },
   },
   select: {
     ...BasicConfig.widgets.select,
     factory: (props) => {
-      return props.asyncFetch || props.showSearch ? (
-        <CalAutocompleteWidget {...props} />
-      ) : (
-        <CalSelectWidget {...props} />
-      );
+      return <SelectWidget {...props} />;
     },
   },
   boolean: {
     ...BasicConfig.widgets.boolean,
-    factory: (props) => <CalBooleanWidget {...props} />,
+    factory: (props) => <BooleanWidget {...props} />,
   },
   phone: {
     ...BasicConfig.widgets.text,
-    factory: (props) => <CalTextWidget type="tel" {...props} />,
+    factory: (props) => <TextWidget type="tel" {...props} />,
     valuePlaceholder: "Select range",
   },
   email: {
     ...BasicConfig.widgets.text,
-    factory: (props) => <CalTextWidget type="email" {...props} />,
+    factory: (props) => <TextWidget type="email" {...props} />,
   },
 };
 
@@ -117,11 +112,11 @@ operators.between.label = "Between";
 delete operators.proximity;
 delete operators.is_null;
 delete operators.is_not_null;
-
-export default {
+const config = {
   conjunctions: BasicConfig.conjunctions,
   operators,
   types,
   widgets,
   settings,
 };
+export default config;

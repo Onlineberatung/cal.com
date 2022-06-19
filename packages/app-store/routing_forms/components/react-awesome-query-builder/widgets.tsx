@@ -1,31 +1,31 @@
 import { TrashIcon } from "@heroicons/react/solid";
-import React from "react";
-import { Utils as QbUtils } from "react-awesome-query-builder";
+import { Factory } from "react";
+import {
+  FieldProps,
+  ConjsProps,
+  SwitchProps,
+  ButtonProps,
+  ButtonGroupProps,
+  ValueSourcesProps,
+  Utils as QbUtils,
+} from "react-awesome-query-builder";
 
-import { Button } from "@calcom/ui";
+import { Button as CalButton } from "@calcom/ui";
 import { Input } from "@calcom/ui/form/fields";
 
 // import { mapListValues } from "../../../../utils/stuff";
 import { SelectWithValidation as Select } from "@components/ui/form/Select";
 
-const CalTextAreaWidget = (props) => {
-  const {
-    value,
-    setValue,
-    config,
-    readonly,
-    placeholder,
-    maxLength,
-    maxRows,
-    fullWidth,
-    customProps,
-    ...remainingProps
-  } = props;
+const TextAreaWidget = (props) => {
+  const { value, setValue, readonly, placeholder, maxLength, fullWidth, customProps, ...remainingProps } =
+    props;
+
   const onChange = (e) => {
     let val = e.target.value;
     if (val === "") val = undefined; // don't allow empty value
     setValue(val);
   };
+
   const textValue = value || "";
   return (
     <textarea
@@ -44,9 +44,9 @@ const CalTextAreaWidget = (props) => {
   );
 };
 
-const CalTextWidget = (props) => {
-  const { value, setValue, config, type, readonly, placeholder, maxLength, customProps, ...remainingProps } =
-    props;
+const TextWidget = (props) => {
+  const { value, setValue, config, readonly, placeholder, maxLength, customProps, ...remainingProps } = props;
+  let { type } = props;
   type = type || "text";
   const onChange = (e) => {
     let val = e.target.value;
@@ -68,7 +68,7 @@ const CalTextWidget = (props) => {
     />
   );
 };
-function CalNumberWidget({ value, setValue, ...remainingProps }) {
+function NumberWidget({ value, setValue, ...remainingProps }) {
   return (
     <Input
       type="number"
@@ -81,8 +81,8 @@ function CalNumberWidget({ value, setValue, ...remainingProps }) {
   );
 }
 
-const CalMultiSelectWidget = ({ listValues, setValue, value }) => {
-  //TODO: Use CalSelect here.
+const MultiSelectWidget = ({ listValues, setValue, value }) => {
+  //TODO: Use Select here.
   //TODO: Let's set listValue itself as label and value instead of using title.
   const selectItems = listValues.map((item) => {
     return {
@@ -91,7 +91,7 @@ const CalMultiSelectWidget = ({ listValues, setValue, value }) => {
     };
   });
 
-  const defaultValue = selectItems.filter((item) => value.includes(item.value));
+  const defaultValue = selectItems.filter((item) => value?.includes(item.value));
 
   return (
     <Select
@@ -105,7 +105,7 @@ const CalMultiSelectWidget = ({ listValues, setValue, value }) => {
   );
 };
 
-function CalButton({ type, label, onClick, readonly, config }) {
+function Button({ type, label, onClick, readonly, config }) {
   if (type === "delRule" || type == "delGroup") {
     return (
       <button className="ml-5">
@@ -119,13 +119,13 @@ function CalButton({ type, label, onClick, readonly, config }) {
     label = "Add rule group";
   }
   return (
-    <Button type="button" color="secondary" size="sm" disabled={readonly} onClick={onClick}>
+    <CalButton type="button" color="secondary" size="sm" disabled={readonly} onClick={onClick}>
       {label}
-    </Button>
+    </CalButton>
   );
 }
 
-function CalButtonGroup({ children, config }) {
+function ButtonGroup({ children, config }) {
   return (
     <>
       {children.map((button, index) => {
@@ -138,7 +138,7 @@ function CalButtonGroup({ children, config }) {
     </>
   );
 }
-function CalConjs({
+function Conjs({
   id,
   not,
   setNot,
@@ -149,10 +149,12 @@ function CalConjs({
   config,
   showNot,
   notLabel,
-}) {
-  const conjsCount = Object.keys(conjunctionOptions).length;
+}: ConjsProps) {
+  const conjsCount = Object.keys(conjunctionOptions!).length;
   const lessThenTwo = disabled;
-  const { forceShowConj } = config.settings;
+  // react-awesome-query-builder has faulty types
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const { forceShowConj } = config!.settings;
   const showConj = forceShowConj || (conjsCount > 1 && !lessThenTwo);
   const options = [
     { label: "All", value: "all" },
@@ -160,8 +162,10 @@ function CalConjs({
     { label: "None", value: "none" },
   ];
   const renderOptions = () => {
-    const { checked: andSelected } = conjunctionOptions["AND"];
-    const { checked: orSelected } = conjunctionOptions["OR"];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { checked: andSelected } = conjunctionOptions!["AND"];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { checked: orSelected } = conjunctionOptions!["OR"];
     const notSelected = not;
     // Default to All
     let value = andSelected ? "all" : orSelected ? "any" : "all";
@@ -198,10 +202,11 @@ function CalConjs({
     );
   };
 
-  return [showConj && renderOptions()];
+  return showConj ? renderOptions() : null;
 }
 
-function CalFieldSelect({ items, setField, selectedKey }) {
+const FieldSelect = function FieldSelect(props: FieldProps) {
+  const { items, setField, selectedKey } = props;
   const selectItems = items.map((item) => {
     return {
       ...item,
@@ -222,21 +227,9 @@ function CalFieldSelect({ items, setField, selectedKey }) {
       defaultValue={defaultValue}
       options={selectItems}></Select>
   );
-}
-const CalFieldAutocomplete = CalFieldSelect;
-
-const CalSwitch = ({ value, setValue, label, id, config, type }) => {
-  const onChange = (e) => setValue(e.target.checked);
-  const postfix = type;
-  return [
-    <input key={id + postfix} type="checkbox" id={id + postfix} checked={!!value} onChange={onChange} />,
-    <label key={id + postfix + "label"} htmlFor={id + postfix}>
-      {label}
-    </label>,
-  ];
 };
 
-const CalValueSources = ({ config, valueSources, valueSrc, title, setValueSrc, readonly }) => {
+const ValueSources = ({ config, valueSources, valueSrc, title, setValueSrc, readonly }) => {
   const renderOptions = (valueSources) =>
     valueSources.map(([srcKey, info]) => (
       <option key={srcKey} value={srcKey}>
@@ -255,7 +248,7 @@ const CalValueSources = ({ config, valueSources, valueSrc, title, setValueSrc, r
 
 // import { mapListValues } from "../../../../utils/stuff";
 
-function CalSelectWidget({ listValues, setValue, value, ...remainingProps }) {
+function SelectWidget({ listValues, setValue, value, ...remainingProps }) {
   const selectItems = listValues.map((item) => {
     return {
       label: item.title,
@@ -276,22 +269,16 @@ function CalSelectWidget({ listValues, setValue, value, ...remainingProps }) {
   );
 }
 
-const CalAutocompleteWidget = CalSelectWidget;
+const AutocompleteWidget = SelectWidget;
 
-const CalBooleanWidget = (props) => {
+const BooleanWidget = (props) => {
   const { value, setValue, config, labelYes, labelNo, readonly, customProps = {} } = props;
   const customRadioYesProps = customProps.radioYes || {};
   const customRadioNoProps = customProps.radioNo || {};
 
-  const onCheckboxChange = (e) => setValue(e.target.checked);
   const onRadioChange = (e) => setValue(e.target.value == "true");
   const id = QbUtils.uuid(),
     id2 = QbUtils.uuid();
-
-  // return <>
-  //     <input key={id}  type="checkbox" id={id} checked={!!value} disabled={readonly} onChange={onCheckboxChange} />
-  //     <label style={{display: "inline"}} key={id+"label"}  htmlFor={id}>{value ? labelYes : labelNo}</label>
-  // </>;
 
   return (
     <>
@@ -326,25 +313,21 @@ const CalBooleanWidget = (props) => {
 };
 
 // provider
-const CalProvider = ({ config, children }: any) => children;
+const Provider = ({ config, children }: any) => children;
 
-const CalWidgets = {
-  CalTextWidget,
-  CalTextAreaWidget,
-  CalSelectWidget,
-  CalNumberWidget,
-  CalBooleanWidget,
-  CalMultiSelectWidget,
-  CalAutocompleteWidget,
-
-  CalFieldSelect,
-  CalFieldAutocomplete,
-
-  CalButton,
-  CalButtonGroup,
-  CalConjs,
-  CalSwitch,
-  CalValueSources,
-  CalProvider,
+const Widgets = {
+  TextWidget,
+  TextAreaWidget,
+  SelectWidget,
+  NumberWidget,
+  BooleanWidget,
+  MultiSelectWidget,
+  AutocompleteWidget,
+  FieldSelect,
+  Button,
+  ButtonGroup,
+  Conjs,
+  ValueSources,
+  Provider,
 };
-export default CalWidgets;
+export default Widgets;
