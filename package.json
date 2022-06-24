@@ -10,7 +10,7 @@
     "packages/app-store/ee/*"
   ],
   "scripts": {
-    "build": "turbo run build --scope=\"@calcom/web\" --include-dependencies",
+    "build": "turbo run build --scope=\"@calcom/web\" --scope=\"@calcom/api\" --include-dependencies",
     "clean": "turbo run clean && rm -rf node_modules",
     "db-deploy": "turbo run db-deploy",
     "db-seed": "turbo run db-seed",
@@ -37,7 +37,7 @@
     "env-check:common": "dotenv-checker --schema .env.example --env .env",
     "env-check:app-store": "dotenv-checker --schema .env.appStore.example --env .env.appStore",
     "prepare": "husky install",
-    "start": "turbo run start --scope=\"@calcom/web\"",
+    "start": "turbo run start --scope=\"@calcom/web\" --scope=\"@calcom/api\"",
     "test": "turbo run test",
     "test-playwright": "yarn playwright test --config=tests/config/playwright.config.ts",
     "embed-tests-quick": "turbo run embed-tests-quick",
