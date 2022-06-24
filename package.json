@@ -9,7 +9,7 @@
     "packages/app-store/*"
   ],
   "scripts": {
-    "build": "turbo run build --scope=\"@calcom/web\" --include-dependencies",
+    "build": "turbo run build --scope="@calcom/web" --scope="@calcom/api" --include-dependencies",
     "clean": "turbo run clean && rm -rf node_modules",
     "db-deploy": "turbo run db-deploy",
     "db-seed": "turbo run db-seed",
