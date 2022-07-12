@@ -5,6 +5,7 @@ import cache from "memory-cache";
 
 import { getCalendar } from "@calcom/app-store/_utils/getCalendar";
 import getApps from "@calcom/app-store/utils";
+import { sendBrokenIntegrationEmail } from "@calcom/emails";
 import { getUid } from "@calcom/lib/CalEventParser";
 import { getErrorFromUnknown } from "@calcom/lib/errors";
 import logger from "@calcom/lib/logger";
@@ -45,6 +46,7 @@ export const getConnectedCalendars = async (
             ...cal,
             primary: cal.primary || null,
             isSelected: selectedCalendars.some((selected) => selected.externalId === cal.externalId),
+            credentialId,
           }))
           .sortBy(["primary"])
           .value();
@@ -76,7 +78,7 @@ export const getConnectedCalendars = async (
 
 const CACHING_TIME = 30_000; // 30 seconds
 
-const getCachedResults = (
+const getCachedResults = async (
   withCredentials: Credential[],
   dateFrom: string,
   dateTo: string,
@@ -84,6 +86,8 @@ const getCachedResults = (
 ) => {
   const calendarCredentials = withCredentials.filter((credential) => credential.type.endsWith("_calendar"));
   const calendars = calendarCredentials.map((credential) => getCalendar(credential));
+
+  const startGetBusyCalendarTimes = performance.now();
   const results = calendars.map(async (c, i) => {
     /** Filter out nulls */
     if (!c) return [];
@@ -96,18 +100,31 @@ const getCachedResults = (
     /** We extract external Ids so we don't cache too much */
     const selectedCalendarIds = passedSelectedCalendars.map((sc) => sc.externalId);
     /** We create a unque hash key based on the input data */
-    const cacheKey = createHash("md5").update(JSON.stringify({ id, selectedCalendarIds })).digest("hex");
+    const cacheKey = createHash("md5")
+      .update(JSON.stringify({ id, selectedCalendarIds, dateFrom, dateTo }))
+      .digest("hex");
     /** Check if we already have cached data and return */
     const cachedAvailability = cache.get(cacheKey);
-    if (cachedAvailability) return cachedAvailability;
+    if (cachedAvailability) {
+      log.debug(`Cache HIT: Calendar Availability for key`, { id, selectedCalendarIds, dateFrom, dateTo });
+      return cachedAvailability;
+    }
+    log.debug(`Cache MISS: Calendar Availability for key`, { id, selectedCalendarIds, dateFrom, dateTo });
     /** If we don't then we actually fetch external calendars (which can be very slow) */
     const availability = await c.getAvailability(dateFrom, dateTo, passedSelectedCalendars);
     /** We save the availability to a few seconds so recurrent calls are nearly instant */
     cache.put(cacheKey, availability, CACHING_TIME);
     return availability;
   });
+  const awaitedResults = await Promise.all(results);
+  const endGetBusyCalendarTimes = performance.now();
 
-  return Promise.all(results);
+  log.debug(
+    `getBusyCalendarTimes took ${
+      endGetBusyCalendarTimes - startGetBusyCalendarTimes
+    }ms for creds ${calendarCredentials.map((cred) => cred.id)}`
+  );
+  return awaitedResults;
 };
 
 export const getBusyCalendarTimes = async (
@@ -141,7 +158,8 @@ export const createEvent = async (
 
   // TODO: Surfice success/error messages coming from apps to improve end user visibility
   const creationResult = calendar
-    ? await calendar.createEvent(calEvent).catch((e) => {
+    ? await calendar.createEvent(calEvent).catch(async (e) => {
+        await sendBrokenIntegrationEmail(calEvent, "calendar");
         log.error("createEvent failed", e, calEvent);
         success = false;
         return undefined;
@@ -177,7 +195,8 @@ export const updateEvent = async (
             success = true;
             return event;
           })
-          .catch((e) => {
+          .catch(async (e) => {
+            await sendBrokenIntegrationEmail(calEvent, "calendar");
             log.error("updateEvent failed", e, calEvent);
             return undefined;
           })

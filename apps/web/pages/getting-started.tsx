@@ -2,10 +2,6 @@ import { ArrowRightIcon } from "@heroicons/react/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Prisma } from "@prisma/client";
 import classnames from "classnames";
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import debounce from "lodash/debounce";
 import omit from "lodash/omit";
 import { NextPageContext } from "next";
@@ -18,7 +14,9 @@ import * as z from "zod";
 
 import getApps from "@calcom/app-store/utils";
 import { getCalendarCredentials, getConnectedCalendars } from "@calcom/core/CalendarManager";
-import { ResponseUsernameApi } from "@calcom/ee/lib/core/checkPremiumUsername";
+import dayjs from "@calcom/dayjs";
+import { DOCS_URL } from "@calcom/lib/constants";
+import { fetchUsername } from "@calcom/lib/fetchUsername";
 import { Alert } from "@calcom/ui/Alert";
 import Button from "@calcom/ui/Button";
 import { Form } from "@calcom/ui/form/fields";
@@ -39,10 +37,6 @@ import { CalendarListContainer } from "@components/integrations/CalendarListCont
 import TimezoneSelect from "@components/ui/form/TimezoneSelect";
 
 import getEventTypes from "../lib/queries/event-types/get-event-types";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(localizedFormat);
 
 type ScheduleFormValues = {
   schedule: ScheduleType;
@@ -236,20 +230,6 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
     token: string;
   }>({ resolver: zodResolver(schema), mode: "onSubmit" });
 
-  const fetchUsername = async (username: string) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/username`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: username.trim() }),
-      method: "POST",
-      mode: "cors",
-    });
-    const data = (await response.json()) as ResponseUsernameApi;
-    return { response, data };
-  };
-
   // Should update username on user when being redirected from sign up and doing google/saml
   useEffect(() => {
     async function validateAndSave(username: string) {
@@ -299,7 +279,7 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
               </h2>
               <p className="mb-2 text-sm text-gray-500">
                 {t("you_will_need_to_generate")}. Find out how to do this{" "}
-                <a href="https://docs.cal.com/import">here</a>.
+                <a href={`${DOCS_URL}/import`}>here</a>.
               </p>
               <form
                 className="flex"

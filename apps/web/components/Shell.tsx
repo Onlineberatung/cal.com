@@ -20,6 +20,7 @@ import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 import { useIsEmbed } from "@calcom/embed-core/embed-iframe";
+import { WEBAPP_URL, JOIN_SLACK, ROADMAP } from "@calcom/lib/constants";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import Button from "@calcom/ui/Button";
 import Dropdown, {
@@ -34,7 +35,6 @@ import HelpMenuItem from "@ee/components/support/HelpMenuItem";
 
 import ErrorBoundary from "@lib/ErrorBoundary";
 import classNames from "@lib/classNames";
-import { WEBAPP_URL } from "@lib/config/constants";
 import { shouldShowOnboarding } from "@lib/getting-started";
 import useMeQuery from "@lib/hooks/useMeQuery";
 import useTheme from "@lib/hooks/useTheme";
@@ -425,14 +425,11 @@ export default function Shell(props: LayoutProps) {
   const i18n = useViewerI18n();
   const { status } = useSession();
 
-  const isLoading =
-    i18n.status === "loading" ||
-    query.status === "loading" ||
-    isRedirectingToOnboarding ||
-    loading ||
-    !isReady;
+  const isLoading = query.status === "loading" || isRedirectingToOnboarding || loading || !isReady;
 
-  if (isLoading) {
+  // Don't show any content till translations are loaded.
+  // As they are cached infintely, this status would be loading just once for the app's lifetime until refresh
+  if (i18n.status === "loading") {
     return (
       <div className="absolute z-50 flex h-screen w-full items-center bg-gray-50">
         <Loader />
@@ -455,6 +452,7 @@ function UserDropdown({ small }: { small?: boolean }) {
   const { t } = useLocale();
   const query = useMeQuery();
   const user = query.data;
+
   const mutation = trpc.useMutation("viewer.away", {
     onSettled() {
       utils.invalidateQueries("viewer.me");
@@ -469,6 +467,11 @@ function UserDropdown({ small }: { small?: boolean }) {
     setMenuOpen(false);
   };
 
+  // Prevent rendering dropdown if user isn't available.
+  // We don't want to show nameless user.
+  if (!user) {
+    return null;
+  }
   return (
     <Dropdown open={menuOpen} onOpenChange={() => setHelpOpen(false)}>
       <DropdownMenuTrigger asChild onClick={() => setMenuOpen(true)}>
@@ -497,10 +500,14 @@ function UserDropdown({ small }: { small?: boolean }) {
             <span className="flex flex-grow items-center truncate">
               <span className="flex-grow truncate text-sm">
                 <span className="block truncate font-medium text-gray-900">
-                  {user?.username || "Nameless User"}
+                  {user?.name || "Nameless User"}
                 </span>
                 <span className="block truncate font-normal text-neutral-500">
-                  {user?.username ? `cal.com/${user.username}` : "No public page"}
+                  {user?.username
+                    ? process.env.NEXT_PUBLIC_WEBSITE_URL === "https://cal.com"
+                      ? `cal.com/${user.username}`
+                      : `/${user.username}`
+                    : "No public page"}
                 </span>
               </span>
               <SelectorIcon
@@ -551,7 +558,7 @@ function UserDropdown({ small }: { small?: boolean }) {
             <DropdownMenuSeparator className="h-px bg-gray-200" />
             <DropdownMenuItem>
               <a
-                href="https://cal.com/slack"
+                href={JOIN_SLACK}
                 target="_blank"
                 rel="noreferrer"
                 className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
@@ -584,7 +591,7 @@ function UserDropdown({ small }: { small?: boolean }) {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://cal.com/roadmap"
+                href={ROADMAP}
                 className="flex items-center px-4 py-2 text-sm text-gray-700">
                 <MapIcon className="h-5 w-5 text-gray-500 ltr:mr-3 rtl:ml-3" /> {t("visit_roadmap")}
               </a>

@@ -3,6 +3,7 @@ require("dotenv").config({ path: "../../.env" });
 const withTM = require("next-transpile-modules")([
   "@calcom/app-store",
   "@calcom/core",
+  "@calcom/dayjs",
   "@calcom/ee",
   "@calcom/lib",
   "@calcom/prisma",
@@ -10,6 +11,7 @@ const withTM = require("next-transpile-modules")([
   "@calcom/ui",
   "@calcom/emails",
   "@calcom/embed-core",
+  "@calcom/embed-react",
   "@calcom/embed-snippet",
 ]);
 const { i18n } = require("./next-i18next.config");
