@@ -175,7 +175,10 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
                         />
                         <div className="space-x-2 text-center rtl:space-x-reverse">
                           {!props.booking.eventType?.recurringEvent && (
-                            <Button color="secondary" onClick={() => router.push("/reschedule/" + uid)}>
+                            <Button
+                              style={{ display: "none" }}
+                              color="secondary"
+                              onClick={() => router.push("/reschedule/" + uid)}>
                               {t("reschedule_this")}
                             </Button>
                           )}

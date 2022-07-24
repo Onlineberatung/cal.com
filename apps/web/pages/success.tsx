@@ -257,7 +257,9 @@ export default function Success(props: SuccessProps) {
       {userIsOwner && !isEmbed && (
         <div className="mt-2 ml-4 -mb-4">
           <Link href={eventType.recurringEvent?.count ? "/bookings/recurring" : "/bookings/upcoming"}>
-            <a className="mt-2 inline-flex px-1 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-800">
+            <a
+              style={{ display: "none" }}
+              className="mt-2 inline-flex px-1 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-800">
               <Icon.FiChevronLeft className="h-5 w-5" /> {t("back_to_bookings")}
             </a>
           </Link>
@@ -341,7 +343,9 @@ export default function Success(props: SuccessProps) {
                             {bookingInfo?.user && (
                               <div className="mb-3">
                                 <p>{bookingInfo.user.name}</p>
-                                <p className="text-bookinglight">{bookingInfo.user.email}</p>
+                                <p style={{ display: "none" }} className="text-bookinglight">
+                                  {bookingInfo.user.email}
+                                </p>
                               </div>
                             )}
                             {bookingInfo?.attendees.map((attendee, index) => (
@@ -349,7 +353,9 @@ export default function Success(props: SuccessProps) {
                                 key={attendee.name}
                                 className={index === bookingInfo.attendees.length - 1 ? "" : "mb-3"}>
                                 <p>{attendee.name}</p>
-                                <p className="text-bookinglight">{attendee.email}</p>
+                                <p style={{ display: "none" }} className="text-bookinglight">
+                                  {attendee.email}
+                                </p>
                               </div>
                             ))}
                           </div>
@@ -403,7 +409,9 @@ export default function Success(props: SuccessProps) {
                 {!needsConfirmation &&
                   !isCancelled &&
                   (!isCancellationMode ? (
-                    <div className="border-bookinglightest text-bookingdark mt-2 grid-cols-3 border-b py-4 text-left dark:border-gray-900 sm:grid">
+                    <div
+                      style={{ display: "none" }}
+                      className="border-bookinglightest text-bookingdark mt-2 grid-cols-3 border-b py-4 text-left dark:border-gray-900 sm:grid">
                       <span className="font-medium text-gray-700 ltr:mr-2 rtl:ml-2 dark:text-gray-50">
                         {t("need_to_make_a_change")}
                       </span>
@@ -539,7 +547,9 @@ export default function Success(props: SuccessProps) {
                   </div>
                 )}
                 {session === null && !(userIsOwner || props.hideBranding) && (
-                  <div className="border-bookinglightest text-booking-lighter pt-4 text-center text-xs dark:border-gray-900 dark:text-white">
+                  <div
+                    style={{ display: "none" }}
+                    className="border-bookinglightest text-booking-lighter pt-4 text-center text-xs dark:border-gray-900 dark:text-white">
                     <a href="https://cal.com/signup">{t("create_booking_link_with_calcom")}</a>
 
                     <form

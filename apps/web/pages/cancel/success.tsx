@@ -62,6 +62,7 @@ export default function CancelSuccess() {
                     {!loading && !session?.user && <Button href={eventUrl}>Pick another</Button>}
                     {!loading && session?.user && (
                       <Button
+                        style={{ display: "none" }}
                         data-testid="back-to-bookings"
                         href={isRecurringEvent ? "/bookings/recurring" : "/bookings/upcoming"}
                         StartIcon={Icon.FiArrowLeft}>
