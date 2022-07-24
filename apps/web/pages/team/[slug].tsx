@@ -104,7 +104,7 @@ function TeamPage({ team }: TeamPageProps) {
           {!showMembers.isOn && team.eventTypes.length > 0 && (
             <div className="mx-auto max-w-3xl">
               {eventTypes}
-              <div className="relative mt-12">
+              <div className="relative mt-12" style={{ display: "none" }}>
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-gray-200 dark:border-gray-700" />
                 </div>
@@ -115,7 +115,7 @@ function TeamPage({ team }: TeamPageProps) {
                 </div>
               </div>
 
-              <aside className="mt-8 text-center dark:text-white">
+              <aside className="mt-8 text-center dark:text-white" style={{ display: "none" }}>
                 <Button
                   color="secondary"
                   EndIcon={ArrowRightIcon}
