@@ -5,7 +5,7 @@
 
 */
 -- DropForeignKey
-ALTER TABLE "DailyEventReference" DROP CONSTRAINT "DailyEventReference_bookingId_fkey";
+-- ALTER TABLE "DailyEventReference" DROP CONSTRAINT "DailyEventReference_bookingId_fkey";
 
 -- DropTable
-DROP TABLE "DailyEventReference";
+-- DROP TABLE "DailyEventReference";

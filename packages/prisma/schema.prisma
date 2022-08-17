@@ -260,6 +260,14 @@ enum BookingStatus {
   PENDING   @map("pending")
 }
 
+model DailyEventReference {
+  id         Int      @id @default(autoincrement())
+  dailyurl   String   @default("dailycallurl")
+  dailytoken String   @default("dailytoken")
+  booking    Booking? @relation(fields: [bookingId], references: [id])
+  bookingId  Int?     @unique
+}
+
 model Booking {
   id                    Int                  @id @default(autoincrement())
   uid                   String               @unique
@@ -274,6 +282,7 @@ model Booking {
   startTime             DateTime
   endTime               DateTime
   attendees             Attendee[]
+  dailyRef              DailyEventReference?
   location              String?
   createdAt             DateTime             @default(now())
   updatedAt             DateTime?
