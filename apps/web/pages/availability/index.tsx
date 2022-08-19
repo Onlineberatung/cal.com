@@ -62,7 +62,7 @@ export default function AvailabilityPage() {
       <Shell
         heading={t("availability")}
         subtitle={t("configure_availability")}
-        CTA={<NewScheduleButton />}
+        // CTA={<NewScheduleButton />}
         customLoader={<SkeletonLoader />}>
         <WithQuery success={({ data }) => <AvailabilityList {...data} />} customLoader={<SkeletonLoader />} />
       </Shell>

@@ -18,7 +18,7 @@ export default function Apps({ apps }: InferGetStaticPropsType<typeof getStaticP
   return (
     <>
       <Shell isPublic large>
-        <div className="-mx-4 md:-mx-8">
+        <div className="-mx-4 md:-mx-8" style={{ display: "none" }}>
           <div className="mb-10 bg-gray-50 px-4 pb-2">
             <Link href="/apps">
               <a className="mt-2 inline-flex px-1 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-800">
@@ -28,7 +28,9 @@ export default function Apps({ apps }: InferGetStaticPropsType<typeof getStaticP
           </div>
         </div>
         <div className="mb-16">
-          <h2 className="mb-2 text-lg font-semibold text-gray-900">All {router.query.category} apps</h2>
+          <h2 style={{ display: "none" }} className="mb-2 text-lg font-semibold text-gray-900">
+            All {router.query.category} apps
+          </h2>
           <div className="grid-col-1 grid grid-cols-1 gap-3 md:grid-cols-3">
             {apps.map((app) => {
               return (

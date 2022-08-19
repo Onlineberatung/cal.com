@@ -67,7 +67,9 @@ export function AvailabilityForm(props: inferQueryOutput<"viewer.availability.sc
       className="grid grid-cols-3 gap-2">
       <div className="col-span-3 space-y-2 lg:col-span-2">
         <div className="divide-y rounded-sm border border-gray-200 bg-white px-4 py-5 sm:p-6">
-          <h3 className="mb-5 text-base font-medium leading-6 text-gray-900">{t("change_start_end")}</h3>
+          <h3 style={{ display: "none" }} className="mb-5 text-base font-medium leading-6 text-gray-900">
+            {t("change_start_end")}
+          </h3>
           <Schedule name="schedule" />
         </div>
         <div className="space-x-2 text-right">
@@ -77,7 +79,7 @@ export function AvailabilityForm(props: inferQueryOutput<"viewer.availability.sc
           <Button>{t("save")}</Button>
         </div>
       </div>
-      <div className="min-w-40 col-span-3 ml-2 space-y-2 lg:col-span-1">
+      <div style={{ display: "none" }} className="min-w-40 col-span-3 ml-2 space-y-2 lg:col-span-1">
         {props.isDefault ? (
           <div className="inline-block rounded border border-gray-300 bg-gray-200 px-2 py-0.5 pl-1.5 text-sm font-medium text-neutral-800">
             <span className="flex items-center">

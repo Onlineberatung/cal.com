@@ -223,18 +223,14 @@ export default function IntegrationsPage() {
   const { t } = useLocale();
   const query = trpc.useQuery(["viewer.integrations", { onlyInstalled: true }]);
   return (
-    <Shell
-      heading={t("installed_apps")}
-      subtitle={t("manage_your_connected_apps")}
-      large
-      customLoader={<SkeletonLoader />}>
+    <Shell customLoader={<SkeletonLoader />}>
       <AppsShell>
         <QueryCell
           query={query}
           success={({ data }) => {
             return data.items.length > 0 ? (
               <>
-                <IntegrationsContainer variant="conferencing" />
+                {/*<IntegrationsContainer variant="conferencing" />*/}
                 <CalendarListContainer />
                 <IntegrationsContainer variant="payment" className="mt-8" />
                 <IntegrationsContainer variant="other" className="mt-8" />

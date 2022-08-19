@@ -122,7 +122,7 @@ const Layout = ({
   plan,
   ...props
 }: LayoutProps & { status: SessionContextValue["status"]; plan?: UserPlan; isLoading: boolean }) => {
-  const isEmbed = useIsEmbed();
+  const isEmbed = true;
   const router = useRouter();
   const { data: routingForms } = useApp("routing_forms");
 
@@ -360,6 +360,7 @@ const Layout = ({
               )}
               {props.heading && (
                 <header
+                  style={{ display: "none" }}
                   className={classNames(
                     props.large && "bg-gray-100 py-8 lg:mb-8 lg:pt-16 lg:pb-7",
                     "block justify-between px-4 pt-8 sm:flex sm:px-6 md:px-8"
