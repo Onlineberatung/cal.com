@@ -203,7 +203,7 @@ const Layout = ({
       </div>
 
       <div
-        className={classNames("flex h-screen overflow-hidden", props.large ? "bg-white" : "bg-gray-100")}
+        className={classNames("flex h-screen overflow-hidden", props.large ? "bg-white" : "bg-white")}
         data-testid="dashboard-shell">
         {status === "authenticated" && (
           <div style={isEmbed ? { display: "none" } : {}} className="hidden md:flex lg:flex-shrink-0">
@@ -386,7 +386,7 @@ const Layout = ({
               )}
               <div
                 className={classNames(
-                  "px-4 sm:px-6 md:px-8",
+                  "px-4 sm:px-6 md:px-0",
                   props.flexChildrenContainer && "flex flex-1 flex-col"
                 )}>
                 <ErrorBoundary>{!props.isLoading ? props.children : props.customLoader}</ErrorBoundary>

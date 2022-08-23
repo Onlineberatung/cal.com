@@ -19,7 +19,9 @@ export default function AppsShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="mb-12 block lg:hidden">{status === "authenticated" && <NavTabs tabs={tabs} />}</div>
+      <div style={{ display: "none" }} className="mb-12 block lg:hidden">
+        {status === "authenticated" && <NavTabs tabs={tabs} />}
+      </div>
       <main className="pb-6">{children}</main>
     </>
   );

@@ -328,9 +328,13 @@ const Schedule = ({ name }: { name: string }) => {
   const { i18n } = useLocale();
   return (
     <fieldset className="divide-y divide-gray-200">
-      {weekdayNames(i18n.language).map((weekday, num) => (
-        <ScheduleBlock key={num} name={name} weekday={weekday} day={num} />
-      ))}
+      <ScheduleBlock key={1} name={name} weekday="Montag" day={1} />
+      <ScheduleBlock key={2} name={name} weekday="Dienstag" day={2} />
+      <ScheduleBlock key={3} name={name} weekday="Mittwoch" day={3} />
+      <ScheduleBlock key={4} name={name} weekday="Donnerstag" day={4} />
+      <ScheduleBlock key={5} name={name} weekday="Freitag" day={5} />
+      <ScheduleBlock key={6} name={name} weekday="Samstag" day={6} />
+      <ScheduleBlock key={0} name={name} weekday="Sonntag" day={0} />
     </fieldset>
   );
 };

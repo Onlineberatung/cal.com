@@ -26,7 +26,7 @@ export function ScheduleListItem({
         <div className="group flex w-full items-center justify-between hover:bg-neutral-50 sm:px-6">
           <Link href={"/availability/" + schedule.id}>
             <a className="flex-grow truncate text-sm" title={schedule.name}>
-              <div>
+              <div style={{ display: "none" }}>
                 <span className="truncate font-medium text-neutral-900">{schedule.name}</span>
                 {schedule.isDefault && (
                   <span className="ml-2 inline items-center rounded-sm bg-yellow-100 px-1.5 py-0.5 text-xs font-medium text-yellow-800">
