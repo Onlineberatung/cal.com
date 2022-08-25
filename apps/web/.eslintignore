@@ -2,3 +2,4 @@ node_modules
 prisma/zod
 pages
 components
+packages

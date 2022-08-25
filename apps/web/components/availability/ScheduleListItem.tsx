@@ -19,13 +19,17 @@ export function ScheduleListItem({
   isDeleting: boolean;
 }) {
   const { t, i18n } = useLocale();
-
+  const availabilityDefined =
+    schedule.availability.map((availability: Availability) => availability.id).length == 0;
   return (
     <li key={schedule.id}>
       <div className="flex items-center justify-between py-5 hover:bg-neutral-50 ltr:pl-4 rtl:pr-4 sm:ltr:pl-0 sm:rtl:pr-0">
         <div className="group flex w-full items-center justify-between hover:bg-neutral-50 sm:px-6">
           <Link href={"/availability/" + schedule.id}>
             <a className="flex-grow truncate text-sm" title={schedule.name}>
+              {availabilityDefined && (
+                <span className="truncate font-medium text-neutral-900">Keine Verfügbarkeit definiert.</span>
+              )}
               <div style={{ display: "none" }}>
                 <span className="truncate font-medium text-neutral-900">{schedule.name}</span>
                 {schedule.isDefault && (

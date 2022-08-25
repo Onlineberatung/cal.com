@@ -74,5 +74,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   const state = decodeOAuthState(req);
-  return res.redirect(getSafeRedirectUrl(state?.returnTo) ?? "/apps/installed");
+  res.redirect(process.env.CALENDAR_INTEGRATION_CALLBACK_URL);
 }
