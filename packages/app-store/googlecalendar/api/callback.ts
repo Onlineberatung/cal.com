@@ -48,5 +48,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   });
   const state = decodeOAuthState(req);
-  res.redirect(process.env.CALENDAR_INTEGRATION_CALLBACK_URL);
+  res.redirect(process.env.CALENDAR_INTEGRATION_CALLBACK_URL ?? "");
 }

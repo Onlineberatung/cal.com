@@ -239,6 +239,13 @@ export function CalendarListContainer(props: {
           <>
             {(!!data.connectedCalendars.length || !!installedCalendars.data?.items.length) && (
               <>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <DestinationCalendarSelector
+                    onChange={mutation.mutate}
+                    isLoading={mutation.isLoading}
+                    value={data.destinationCalendar?.externalId}
+                  />
+                </div>
                 <ConnectedCalendarsList onChanged={onChanged} fromOnboarding={fromOnboarding} />
               </>
             )}
