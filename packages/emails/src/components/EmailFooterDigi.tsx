@@ -18,7 +18,7 @@ export const EmailFooterDigi = (props: { calEvent: CalendarEvent; t: TFunction }
               fontFamily: "'Nunito', sans-serif",
             }}>
             <a
-              href="https://app-staging.suchtberatung.digital/impressum"
+              href="https://app.suchtberatung.digital/impressum"
               target="_blank"
               style={{
                 color: "#666",
@@ -37,7 +37,7 @@ export const EmailFooterDigi = (props: { calEvent: CalendarEvent; t: TFunction }
               &nbsp; | &nbsp;
             </span>
             <a
-              href="https://app-staging.suchtberatung.digital/datenschutz"
+              href="https://app.suchtberatung.digital/datenschutz"
               target="_blank"
               style={{
                 color: "#666",

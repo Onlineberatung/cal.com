@@ -9,7 +9,7 @@ import "./../../../../apps/web/styles/fonts.css";
 
 const Spacer = () => <p style={{ height: 6 }} />;
 
-const DIGI_URL = "https://app-staging.suchtberatung.digital/login";
+const DIGI_URL = "https://app.suchtberatung.digital/login";
 
 export const BaseScheduledEmail = (
   props: {
