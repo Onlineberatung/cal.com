@@ -28,7 +28,7 @@ export const getHeadImage = (headerType: BodyHeadType): string => {
 const EmailSchedulingBodyHeader = (props: {
   headerType: BodyHeadType;
   t: TFunction;
-  calEvent: CalendarEvent;
+  calEvent?: CalendarEvent;
 }) => {
   const image = getHeadImage(props.headerType);
   const { t } = props;
@@ -39,8 +39,8 @@ const EmailSchedulingBodyHeader = (props: {
         <td
           align="left"
           style={{
-            fontSize: "20px",
-            padding: "40px 25px",
+            fontSize: "18px",
+            padding: "45px 25px",
             wordBreak: "break-word",
             height: "100px",
             backgroundColor: "#225e65",
@@ -48,8 +48,8 @@ const EmailSchedulingBodyHeader = (props: {
             lineHeight: "5px",
             fontFamily: "'Nunito', sans-serif",
           }}>
-          <h2>{t("tenant_name")}</h2>
-          <small>{t("tenant_claim")}</small>
+          <h2>{t("tenant_name") as string}</h2>
+          <small>{t("tenant_claim") as string}</small>
         </td>
       </EmailCommonDivider>
       <EmailCommonDivider headStyles={{ paddingTop: "10px" }}>

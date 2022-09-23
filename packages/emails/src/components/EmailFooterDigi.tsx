@@ -4,7 +4,7 @@ import { CalendarEvent } from "@calcom/types/Calendar";
 
 import Row from "./Row";
 
-export const EmailFooterDigi = (props: { calEvent: CalendarEvent; t: TFunction }) => {
+export const EmailFooterDigi = (props: { calEvent?: CalendarEvent; t: TFunction }) => {
   const { t } = props;
   return (
     <div style={{ margin: "0px auto", maxWidth: 600, height: 41 }}>
@@ -26,7 +26,7 @@ export const EmailFooterDigi = (props: { calEvent: CalendarEvent; t: TFunction }
                 fontSize: 14,
               }}
               rel="noreferrer">
-              {t("imprint")}
+              {t("imprint") as string}
             </a>
             <span
               style={{
@@ -45,7 +45,7 @@ export const EmailFooterDigi = (props: { calEvent: CalendarEvent; t: TFunction }
                 fontSize: 14,
               }}
               rel="noreferrer">
-              {t("privacy")}
+              {t("privacy") as string}
             </a>
           </div>
         </td>

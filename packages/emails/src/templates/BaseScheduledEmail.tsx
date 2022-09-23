@@ -5,9 +5,8 @@ import type { CalendarEvent, Person } from "@calcom/types/Calendar";
 import Button from "@calcom/ui/Button";
 
 import { BaseEmailHtml, Info, LocationInfo, WhenInfo, WhoInfo, Paragraph } from "../components";
-import "./../../../../apps/web/styles/fonts.css";
 
-const Spacer = () => <p style={{ height: 6 }} />;
+const Spacer = () => <p style={{ height: 12 }} />;
 
 const DIGI_URL = "https://app.suchtberatung.digital/login";
 
@@ -75,11 +74,12 @@ export const BaseScheduledEmail = (
           size="base"
           href={DIGI_URL}
           type="button">
-          {t("to_login")}
+          {t("to_login") as string}
         </Button>
         <Spacer />
         <Paragraph content={t("end_greeting")} />
         <Paragraph content={t("end_greeting_subtitle")} />
+        <Spacer />
       </BaseEmailHtml>
     </div>
   );

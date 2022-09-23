@@ -26,8 +26,8 @@ export const BaseEmailHtml = (props: {
   title?: string;
   subtitle?: React.ReactNode;
   headerType?: BodyHeadType;
-  calEvent: CalendarEvent;
-  t: TFunction;
+  calEvent?: CalendarEvent;
+  t?: TFunction;
 }) => {
   const { t } = props;
   return (
@@ -55,7 +55,11 @@ export const BaseEmailHtml = (props: {
             </Row>
           </div>
           {props.headerType && (
-            <EmailSchedulingBodyHeader calEvent={props.calEvent} headerType={props.headerType} t={t} />
+            <EmailSchedulingBodyHeader
+              calEvent={props.calEvent}
+              headerType={props.headerType}
+              t={t as TFunction}
+            />
           )}
           {props.title && <EmailScheduledBodyHeaderContent title={props.title} subtitle={props.subtitle} />}
           {(props.headerType || props.title || props.subtitle) && <EmailSchedulingBodyDivider />}
@@ -189,7 +193,7 @@ export const BaseEmailHtml = (props: {
               </td>
             </Row>
           </div>
-          <EmailFooterDigi calEvent={props.calEvent} t={t} />
+          <EmailFooterDigi calEvent={props.calEvent} t={t as TFunction} />
           <RawHtml html="<!--[if mso | IE]></td></tr></table><![endif]-->" />
         </div>
       </body>
