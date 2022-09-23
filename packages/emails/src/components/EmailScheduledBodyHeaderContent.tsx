@@ -14,7 +14,7 @@ const EmailScheduledBodyHeaderContent = (props: { title: string; subtitle?: Reac
         }}>
         <div
           style={{
-            fontFamily: "Roboto, Helvetica, sans-serif",
+            fontFamily: "'Nunito', sans-serif",
             fontSize: 24,
             fontWeight: 700,
             lineHeight: "24px",
@@ -30,7 +30,7 @@ const EmailScheduledBodyHeaderContent = (props: { title: string; subtitle?: Reac
         <td align="center" style={{ fontSize: 0, padding: "10px 25px", wordBreak: "break-word" }}>
           <div
             style={{
-              fontFamily: "Roboto, Helvetica, sans-serif",
+              fontFamily: "'Nunito', sans-serif",
               fontSize: 16,
               fontWeight: 400,
               lineHeight: "24px",
