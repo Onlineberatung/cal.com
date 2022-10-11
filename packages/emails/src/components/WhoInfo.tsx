@@ -6,8 +6,7 @@ import { Info } from "./Info";
 
 const PersonInfo = ({ name = "", role = "" }) => (
   <div style={{ color: "#494949", fontWeight: 400, lineHeight: "24px" }}>
-    {name ? `${name} - ` : ""}
-    {role}{" "}
+    {name} - {role}{" "}
   </div>
 );
 
@@ -20,7 +19,7 @@ export function WhoInfo(props: { calEvent: CalendarEvent; t: TFunction }) {
         <>
           <PersonInfo name={props.calEvent.organizer.name} role={t("organizer")} />
           {props.calEvent.attendees.map((attendee) => (
-            <PersonInfo key={attendee.id || attendee.name} role={t("guest")} />
+            <PersonInfo key={attendee.id || attendee.name} name={attendee.name} role={t("guest")} />
           ))}
         </>
       }

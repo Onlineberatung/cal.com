@@ -43,10 +43,10 @@ export default class AttendeeScheduledEmail extends BaseEmail {
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },
-      organizer: { name: this.calEvent.organizer.name, email: this.calEvent.organizer.email },
+      organizer: { name: this.calEvent.organizer.name, email: "email@suchtberatung.digital" },
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
-        email: attendee.email,
+        email: "email@suchtberatung.digital",
       })),
       ...{ recurrenceRule },
       status: "CONFIRMED",
@@ -87,8 +87,6 @@ ${this.t(
     : "your_event_has_been_scheduled"
 )}
 ${this.t(subtitle)}
-
-${getRichDescription(this.calEvent)}
 `.trim();
   }
 
