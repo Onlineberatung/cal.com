@@ -59,7 +59,11 @@ export default function CancelSuccess() {
                 </div>
                 <div className="mt-5 text-center sm:mt-6">
                   <div className="mt-5">
-                    {!loading && !session?.user && <Button href={eventUrl}>Pick another</Button>}
+                    {!loading && !session?.user && (
+                      <Button style={{ display: "none" }} href={eventUrl}>
+                        Pick another
+                      </Button>
+                    )}
                     {!loading && session?.user && (
                       <Button
                         style={{ display: "none" }}
