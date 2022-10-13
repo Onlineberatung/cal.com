@@ -1029,5 +1029,17 @@
   "using_additional_inputs_as_variables": "How to use additional inputs as variables?",
   "missing_connected_calendar": "No calendar connected",
   "download_desktop_app": "Download desktop app",
-  "set_ping_link": "Set Ping link"
+  "set_ping_link": "Set Ping link",
+  "invalid_number": "Ungültige Telefonnummer",
+  "greeting": "Lieber(r) Berater/Ratsuchende,",
+  "meeting_scheduled:" : "{{userName}} hat Ihnen einen neuen Termin eingestellt.",
+  "meeting_cancelled" : "{{userName}} hat folgenden Termin abgesagt.",
+  "meeting_postponed" : "{{userName}} hat folgenden Termin verschoben.",
+  "end_greeting": "Liebe Grüße",
+  "end_greeting_subtitle": "Ihr Team von Digisucht",
+  "to_login": "Zum Login",
+  "imprint": "Impressum",
+  "privacy" : "Datenschutz",
+  "tenant_name": "DigiSucht",
+  "tenant_claim": "suchberatung.digital"
 }
