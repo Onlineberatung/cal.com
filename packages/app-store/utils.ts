@@ -38,6 +38,7 @@ const defaultLocations: OptionTypeBase[] = [
   { value: LocationType.Link, label: "link_meeting" },
   { value: LocationType.Phone, label: "attendee_phone_number" },
   { value: LocationType.UserPhone, label: "host_phone_number" },
+  { value: LocationType.CustomVideoLink, label: "custom_video_link" },
 ];
 
 export function getLocationOptions(integrations: AppMeta, t: TFunction) {
@@ -118,7 +119,7 @@ export function getLocationLabels(t: TFunction) {
       return locations;
     }
     if (location.label === "host_phone_number") {
-      locations[location.value] = `${t("phone_call")} (${t("number_provided")})`;
+      locations[location.value] = `${t("phone_call")}`;
       return locations;
     }
     locations[location.value] = t(location.label);

@@ -323,6 +323,9 @@ const BookingPage = ({
       case LocationType.Link: {
         return locationInfo(locationType)?.link || "";
       }
+      case LocationType.CustomVideoLink: {
+        return locationInfo(locationType)?.link || "";
+      }
       case LocationType.UserPhone: {
         return locationInfo(locationType)?.hostPhoneNumber || "";
       }

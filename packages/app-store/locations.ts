@@ -5,6 +5,7 @@ export enum DefaultLocationType {
   Phone = "phone",
   UserPhone = "userPhone",
   Link = "link",
+  CustomVideoLink = "customVideoLink",
 }
 
 /** If your App has a location option, add it here */
@@ -75,6 +76,8 @@ export const LocationOptionsToString = (location: string, t: TFunction) => {
       return t("cal_provide_tandem_meeting_url");
     case LocationType.Teams:
       return t("cal_provide_teams_meeting_url");
+    case LocationType.CustomVideoLink:
+      return t("custom_video_link");
     default:
       return null;
   }
