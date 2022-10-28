@@ -77,6 +77,8 @@ export const locationKeyToString = (location: LocationObject, t: TFunction) => {
       return "Tandem";
     case LocationType.Teams:
       return "Microsoft Teams";
+    case LocationType.CustomVideoLink:
+      return t("custom_video_link");
     default:
       return null;
   }
