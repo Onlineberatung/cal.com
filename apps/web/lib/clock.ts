@@ -9,7 +9,7 @@ interface TimeOptions {
 }
 
 const timeOptions: TimeOptions = {
-  is24hClock: false,
+  is24hClock: true,
   inviteeTimeZone: "",
 };
 
@@ -20,8 +20,8 @@ const initClock = () => {
     return;
   }
   // This only sets browser locale if there's no preference on localStorage.
-  if (!localStorage.getItem("timeOption.is24hClock")) set24hClock(isBrowserLocale24h());
-  timeOptions.is24hClock = localStorage.getItem("timeOption.is24hClock") === "true";
+  // if (!localStorage.getItem("timeOption.is24hClock")) set24hClock(isBrowserLocale24h());
+  timeOptions.is24hClock = true;
   timeOptions.inviteeTimeZone = localStorage.getItem("timeOption.preferredTimeZone") || dayjs.tz.guess();
 };
 

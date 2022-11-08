@@ -213,6 +213,10 @@ const BookingPage = ({
     }
   }, [router.query.guest]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const locationInfo = (type: LocationType) => locations.find((location) => location.type === type);
   const loggedInIsOwner = eventType?.users[0]?.id === session?.user?.id;
   const guestListEmails = !isDynamicGroupBooking

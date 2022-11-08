@@ -101,7 +101,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
                         brand === "#fff" || brand === "#ffffff" ? "border-brandcontrast" : "border-brand"
                       )}
                       data-testid="time">
-                      {dayjs(slot.time).tz(timeZone()).format(timeFormat)}
+                      {dayjs(slot.time).tz(timeZone()).format("HH:mm")}
                       {!!seatsPerTimeSlot && (
                         <p
                           className={`${
