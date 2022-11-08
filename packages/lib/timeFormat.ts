@@ -27,4 +27,4 @@ export const isBrowserLocale24h = () => {
   }
 };
 
-export const detectBrowserTimeFormat = isBrowserLocale24h() ? "H:mm" : "h:mma";
+export const detectBrowserTimeFormat = "HH:mm";
